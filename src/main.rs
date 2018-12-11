@@ -64,6 +64,10 @@ fn two_three(s: &str) -> TwoThree {
         let count = group.len();
         two |= count == 2;
         three |= count == 3;
+
+        if two && three {
+            break;
+        }
     };
 
     TwoThree {
