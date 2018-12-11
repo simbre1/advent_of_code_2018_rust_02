@@ -53,7 +53,17 @@ fn main() {
         .map(|s| two_three(s))
         .fold(zero,|a, b| a + b);
 
-    println!("{}", result.checksum());
+    println!("part one {}", result.checksum());
+
+    print!("part two ");
+    match part_two(&contents.lines().collect()) {
+        Some(result) => println!(
+            "{} - {} = {}",
+            result.0,
+            result.1,
+            same_chars(&result.0, &result.1)),
+        None => println!("none")
+    }
 }
 
 fn two_three(s: &str) -> TwoThree {
@@ -76,3 +86,39 @@ fn two_three(s: &str) -> TwoThree {
     }
 }
 
+fn part_two(lines: &Vec<&str>) -> Option<(String, String)> {
+    lines.iter().find_map(|line| {
+        match lines.iter().find(|line2| off_by_one(line, line2)) {
+            Some(b) => Some((String::from(*line), String::from(*b))),
+            None => None
+        }
+    })
+}
+
+fn off_by_one(a: &str, b: &str) -> bool {
+    if a.len() != b.len() {
+        return false;
+    }
+
+    return a.chars().zip(b.chars())
+        .filter(|ab| ab.0 == ab.1)
+        .count()
+        == a.len() - 1;
+}
+
+fn same_chars(a: &String, b: &String) -> String {
+    let mut result = String::from("");
+
+    for i in 0..a.len() {
+        if i >= b.len() {
+            break;
+        }
+
+        let ca = a.chars().nth(i).unwrap();
+        let cb = b.chars().nth(i).unwrap();
+        if ca == cb {
+            result.push(ca);
+        }
+    }
+    result
+}
